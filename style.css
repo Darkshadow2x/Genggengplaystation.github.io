@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GengGengPlayStation</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header>
+    <h1>GengGengPlayStation</h1>
+    <nav>
+      <a href="#library">Library</a>
+      <a href="#upload">Upload</a>
+      <a href="#playlist">Playlist</a>
+    </nav>
+  </header>
+
+  <main>
+    <section id="library">
+      <h2>Library</h2>
+      <div id="media-grid"></div>
+    </section>
+
+    <section id="upload">
+      <h2>Upload Media</h2>
+      <input type="file" id="file-input">
+      <button onclick="uploadMedia()">Upload</button>
+    </section>
+
+    <section id="playlist">
+      <h2>Playlist</h2>
+      <div id="playlist-container"></div>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
+const mediaGrid = document.getElementById("media-grid");
+
+// Example media library
+let mediaLibrary = [
+  { title: "Anime 1", src: "media/anime1.mp4" },
+  { title: "Anime 2", src: "media/anime2.mp4" }
+];
+
+function renderLibrary() {
+  mediaGrid.innerHTML = "";
+  mediaLibrary.forEach((media, index) => {
+    const card = document.createElement("div");
+    card.className = "media-card";
+    card.innerHTML = `
+      <h3>${media.title}</h3>
+      <video width="300" controls>
+        <source src="${media.src}" type="video/mp4">
+      </video>
+      <button onclick="addToPlaylist(${index})">Add to Playlist</button>
+    `;
+    mediaGrid.appendChild(card);
+  });
+}
+
+let playlist = [];
+
+function addToPlaylist(index) {
+  playlist.push(mediaLibrary[index]);
+  renderPlaylist();
+}
+
+function renderPlaylist() {
+  const container = document.getElementById("playlist-container");
+  container.innerHTML = "";
+  playlist.forEach((media) => {
+    const p = document.createElement("p");
+    p.textContent = media.title;
+    container.appendChild(p);
+  });
+}
+
+function uploadMedia() {
+  const fileInput = document.getElementById("file-input");
+  const file = fileInput.files[0];
+  if (!file) return alert("Select a file first!");
+  // For demo: just add it to library locally
+  const url = URL.createObjectURL(file);
+  mediaLibrary.push({ title: file.name, src: url });
+  renderLibrary();
+}
+
+// Initial render
+renderLibrary();
+body { font-family: Arial, sans-serif; margin:0; padding:0; }
+header { background:#111; color:white; padding:10px; display:flex; justify-content:space-between; }
+nav a { margin-left: 15px; color:white; text-decoration:none; }
+.media-card { margin:10px; padding:10px; border:1px solid #ccc; display:inline-block; }
+
