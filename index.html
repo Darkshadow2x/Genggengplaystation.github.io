@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GengGengPlaystation</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #0f172a;
+      color: #e5e7eb;
+      margin: 0;
+    }
+    header {
+      background: #020617;
+      padding: 16px;
+      text-align: center;
+    }
+    nav {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      background: #020617;
+      padding-bottom: 10px;
+    }
+    nav button {
+      background: #4f46e5;
+      border: none;
+      padding: 8px 14px;
+      color: white;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    .container {
+      max-width: 1100px;
+      margin: auto;
+      padding: 20px;
+    }
+    .section {
+      margin-bottom: 30px;
+    }
+    .library {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 16px;
+    }
+    .item {
+      background: #020617;
+      padding: 10px;
+      border-radius: 12px;
+      cursor: pointer;
+      text-align: center;
+    }
+    .item:hover {
+      background: #1e293b;
+    }
+    video, audio {
+      width: 100%;
+      margin-top: 10px;
+      border-radius: 10px;
+    }
+    .comments {
+      margin-top: 20px;
+    }
+    .comments textarea {
+      width: 100%;
+      height: 60px;
+      border-radius: 8px;
+      border: none;
+      padding: 8px;
+    }
+    .comments button {
+      margin-top: 6px;
+      padding: 6px 12px;
+      border: none;
+      border-radius: 6px;
+      background: #22c55e;
+      cursor: pointer;
+    }
+    .comment {
+      background: #020617;
+      margin-top: 6px;
+      padding: 6px;
+      border-radius: 6px;
+      font-size: 14px;
+    }
+    .playlist {
+      background: #020617;
+      padding: 12px;
+      border-radius: 12px;
+    }
+    .playlist-item {
+      cursor: pointer;
+      padding: 6px;
+      border-bottom: 1px solid #1e293b;
+    }
+    footer {
+      text-align: center;
+      padding: 14px;
+      font-size: 14px;
+      background: #020617;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>GengGengPlaystation</h1>
+  <p>Anime • Music • Movies</p>
+</header>
+
+<nav>
+  <button onclick="showSection('video')">Video</button>
+  <button onclick="showSection('music')">Music</button>
+  <button onclick="showSection('playlist')">Playlist</button>
+</nav>
+
+<div class="container">
+  <div class="section">
+    <h2>⬆️ Upload Media</h2>
+    <input type="file" id="uploader" multiple accept="video/*,audio/*" />
+    <p style="font-size:14px;opacity:.8">Uploads are local to your browser (no server).</p>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- VIDEO SECTION -->
+  <div id="video" class="section">
+    <h2>🎬 Video Player</h2>
+    <video id="videoPlayer" controls></video>
+
+    <h3>Video Library</h3>
+    <div class="library">
+      <div class="item" onclick="playVideo('sample-video.mp4')">Anime Episode 1</div>
+      <div class="item" onclick="playVideo('movie.mp4')">Movie Trailer</div>
+    </div>
+
+    <div class="comments">
+      <h3>Comments</h3>
+      <textarea id="videoComment"></textarea>
+      <button onclick="addComment('videoComments','videoComment')">Post</button>
+      <div id="videoComments"></div>
+    </div>
+  </div>
+
+  <!-- MUSIC SECTION -->
+  <div id="music" class="section" style="display:none">
+    <h2>🎧 Music Player</h2>
+    <audio id="audioPlayer" controls></audio>
+
+    <h3>Music Library</h3>
+    <div class="library">
+      <div class="item" onclick="playMusic('song.mp3')">Anime OST</div>
+      <div class="item" onclick="playMusic('music.mp3')">J‑Pop Track</div>
+    </div>
+
+    <div class="comments">
+      <h3>Comments</h3>
+      <textarea id="musicComment"></textarea>
+      <button onclick="addComment('musicComments','musicComment')">Post</button>
+      <div id="musicComments"></div>
+    </div>
+  </div>
+
+  <!-- PLAYLIST -->
+  <div id="playlist" class="section" style="display:none">
+    <h2>📃 Playlist</h2>
+    <div class="playlist" id="playlistItems">
+      <div class="playlist-item" onclick="playMusic('song.mp3')">Anime OST</div>
+      <div class="playlist-item" onclick="playMusic('music.mp3')">J‑Pop Track</div>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  Media Player Website • HTML + CSS + JS
+</footer>
+
+<script>
+  function showSection(id) {
+    document.querySelectorAll('.section').forEach(s => s.style.display = 'none');
+    document.getElementById(id).style.display = 'block';
+  }
+
+  function playVideo(src) {
+    const player = document.getElementById('videoPlayer');
+    player.src = src;
+    player.play();
+  }
+
+  function playMusic(src) {
+    const player = document.getElementById('audioPlayer');
+    player.src = src;
+    player.play();
+    showSection('music');
+  }
+
+  function addComment(listId, inputId) {
+    const text = document.getElementById(inputId).value;
+    if (!text) return;
+    const div = document.createElement('div');
+    div.className = 'comment';
+    div.textContent = text;
+    document.getElementById(listId).appendChild(div);
+    document.getElementById(inputId).value = '';
+  }
+  // Upload handling (local only)
+  document.getElementById('uploader')?.addEventListener('change', (e) => {
+    const files = Array.from(e.target.files);
+    files.forEach(file => {
+      const url = URL.createObjectURL(file);
+      const isVideo = file.type.startsWith('video');
+      const item = document.createElement('div');
+      item.className = 'item';
+      item.textContent = file.name;
+      item.onclick = () => isVideo ? playVideo(url) : playMusic(url);
+
+      // Add download link
+      const dl = document.createElement('a');
+      dl.textContent = ' ⬇️';
+      dl.href = url;
+      dl.download = file.name;
+      dl.style.marginLeft = '6px';
+
+      item.appendChild(dl);
+      const libs = document.querySelectorAll(isVideo ? '#video .library' : '#music .library');
+      libs.forEach(lib => lib.appendChild(item.cloneNode(true)));
+    });
+  });
+</script>
+
+</body>
+</html>
